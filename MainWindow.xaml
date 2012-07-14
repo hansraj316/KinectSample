@@ -4,5 +4,10 @@
         Title="MainWindow" Height="480" Width="640">
     <Grid>
         <Image x:Name="ColorImageElement"/> 
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Button Content="Take Picture" Click="TakePictureButton_Click"/>
+            
+        </StackPanel>
+        
     </Grid>
 </Window>

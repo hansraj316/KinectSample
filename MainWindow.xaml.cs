@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Kinect;
+using System.IO;
 namespace KinectSample
 {
     /// <summary>
@@ -115,13 +116,55 @@ namespace KinectSample
                         //pixelData[i] = (byte)~pixelData[i];
                         //pixelData[i+1] = (byte)~pixelData[i+1];
                         //pixelData[i + 2] = (byte)~pixelData[i + 2];
+                        //grayScale
+                        //byte gray = Math.Max(pixelData[i], pixelData[i + 1]);
+                        //gray = Math.Max(pixelData[i + 2], gray);
 
-                        byte gray = Math.Min(pixelData[i], pixelData[i + 1]);
-                        gray = Math.Min(pixelData[i + 2], gray);
+                        //Grainy black and white movie
+                        //byte gray = Math.Min(pixelData[i], pixelData[i + 1]);
+                        //gray = Math.Min(pixelData[i + 2], gray);
 
-                        pixelData[i] = gray;
-                        pixelData[i + 1] = gray;
-                        pixelData[i + 2] = gray;
+                        //pixelData[i] = gray;
+                        //pixelData[i + 1] = gray;
+                        //pixelData[i + 2] = gray;
+
+                        //Washed out colors
+
+                        //double gray = (pixelData[i] * 0.11) +
+                        //                (pixelData[i + 1] * 0.59) +
+                        //                (pixelData[i + 2] * 0.3);
+                        //double desaturation = 0.75;
+                        //pixelData[i] = (byte)(pixelData[i] + desaturation * (gray - pixelData[i]));
+                        //pixelData[i+1] = (byte)(pixelData[i+1] + desaturation * (gray - pixelData[i+1]));
+                        //pixelData[i+2] = (byte)(pixelData[i+2] + desaturation * (gray - pixelData[i+2]));
+                        //High Saturation 
+                        if (pixelData[i] < 0x33 || pixelData[i] < 0xE5)
+                        {
+                            pixelData[i] = 0x00;
+                        }
+                        else
+                        {
+                            pixelData[i] = 0xFF;
+                        }
+
+                        if (pixelData[i+1] < 0x33 || pixelData[i + 1] < 0xE5)
+                        {
+                            pixelData[i] = 0x00;
+                        }
+                        else
+                        {
+                            pixelData[i+1] = 0xFF;
+                        }
+
+                        if (pixelData[i+2] < 0x33 || pixelData[i + 2] < 0xE5)
+                        {
+                            pixelData[i+2] = 0x00;
+                        }
+                        else
+                        {
+                            pixelData[i+2] = 0xFF;
+                        }
+
 
                         //if (i > 0 && i < pixelData.Length / 3)
                         //{
@@ -149,6 +192,29 @@ namespace KinectSample
                 }
 
             }
+        }
+        private void TakePictureButton_Click(object sender, RoutedEventArgs e)
+        {
+            string fileName = "snapshot.jpg";
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+
+            using (FileStream savedSnapshot = new FileStream(fileName, FileMode.CreateNew))
+            {
+                BitmapSource image = (BitmapSource)ColorImageElement.Source;
+
+                JpegBitmapEncoder jpgEncoder = new JpegBitmapEncoder();
+                jpgEncoder.QualityLevel = 70;
+                jpgEncoder.Frames.Add(BitmapFrame.Create(image));
+                jpgEncoder.Save(savedSnapshot);
+
+                savedSnapshot.Flush();
+                savedSnapshot.Close();
+                savedSnapshot.Dispose();
+            }
+
         }
 
 
@@ -179,6 +245,7 @@ namespace KinectSample
 
         #endregion Properties
 
+        
 
 
 
