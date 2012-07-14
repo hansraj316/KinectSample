@@ -1,0 +1,8 @@
+﻿<Window x:Class="KinectSample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="480" Width="640">
+    <Grid>
+        <Image x:Name="ColorImageElement"/> 
+    </Grid>
+</Window>
